@@ -7,8 +7,11 @@ RUN apt update && \
 
 RUN pip install progressbar
 
-VOLUME /home/arthur
-VOLUME /nfs
-WORKDIR /home/arthur/tf_classif
+VOLUME /home
+VOLUME /runs
 
-ENV PYTHONPATH $PYTHONPATH:/home/arthur/tf_classif/models:/home/arthur/tf_classif/models/slim
+WORKDIR /home/models
+
+ENV PYTHONPATH $PYTHONPATH:/home/models:/home/models/slim
+
+ENTRYPOINT ["tensorboard","--logdir","/runs"]

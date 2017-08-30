@@ -60,7 +60,7 @@ def _convert_dataset(split_name, image_json, class_names_to_ids, output_dir, dat
   assert split_name in ['train', 'validation']
 
   num_per_shard = int(math.ceil(len(image_json) / float(_NUM_SHARDS)))
-
+  c = 0
   with tf.Graph().as_default():
     image_reader = ImageReader()
 
@@ -89,11 +89,13 @@ def _convert_dataset(split_name, image_json, class_names_to_ids, output_dir, dat
                 example = dataset_utils.image_to_tfexample(
                     image_data, b'jpg', height, width, class_id)
                 tfrecord_writer.write(example.SerializeToString())
+                c += 1
             except:
-                sys.stdout.write('{}'.format(image_json[i]['location']))
+                sys.stdout.write('\nError with {}\n'.format(image_json[i]['location']))
 
   sys.stdout.write('\n')
   sys.stdout.flush()
+  return c
 
 def run(dataset_dir, output_dir, name):
   """Runs the download and conversion operation.
@@ -113,12 +115,14 @@ def run(dataset_dir, output_dir, name):
   validation_filenames = filter(lambda im : im['stage'] == 'val', photo_filenames)
 
   # First, convert the training and validation sets.
-  _convert_dataset('train', training_filenames, class_names_to_ids, output_dir, name)
-  _convert_dataset('validation', validation_filenames, class_names_to_ids, output_dir, name)
+  c_tr = _convert_dataset('train', training_filenames, class_names_to_ids, output_dir, name)
+  c_val = _convert_dataset('validation', validation_filenames, class_names_to_ids, output_dir, name)
 
   # Finally, write the labels file:
   labels_to_class_names = dict(zip(range(len(class_names)), class_names))
   dataset_utils.write_label_file(labels_to_class_names, output_dir)
+  with open(os.path.join(output_dir, 'count.txt'),'w') as f:
+      f.write('Train: {}\nVal: {}\n'.format(c_tr, c_val))
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()

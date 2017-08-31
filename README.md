@@ -2,7 +2,7 @@
 
 Repository for tensorflow classification for Deepomatic. 
 
-It is a slightly modified version of the TF-slim(https://github.com/tensorflow/models/tree/master/slim). The tutorials there apply for this, except _make_tf_record.py_ can be used to create datasets from Deepomatic json format.
+It is a slightly modified version of the [TF-slim](https://github.com/tensorflow/models/tree/master/slim). The tutorials there apply for this, except _make_tf_record.py_ can be used to create datasets from Deepomatic json format.
 Pretrained checkpoints for fine-tuning can be found [here](https://github.com/tensorflow/models/tree/master/slim#pre-trained-models)
 
 ## Getting started
